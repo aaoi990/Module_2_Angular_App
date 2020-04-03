@@ -1,0 +1,21 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Expense Detail</ion-title>
+    <ion-buttons >
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-card>
+    <ion-card-header>      
+      <ion-card-title>{{ expense.description }}</ion-card-title>
+      <ion-card-subtitle>{{ expense.type }}</ion-card-subtitle>
+    </ion-card-header>  
+    <ion-card-content>
+      £{{ expense.cost }}
+    </ion-card-content>
+  </ion-card>
+
+  <ion-button expand="full" routerLink="/" routerDirection="back"> Back </ion-button>
+</ion-content>

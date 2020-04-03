@@ -1,0 +1,43 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Add A New Expense</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="content-background" no-bounce>
+  <form (submit)="addExpense()" class="form-div">
+    <ion-list>
+      <ion-item>
+        <ion-label position="stacked">Type</ion-label>
+        <ion-select [(ngModel)]="newExpense.type" interface="action-sheet" name="type" >
+          <ion-select-option value="meal">Meal</ion-select-option>
+          <ion-select-option value="accomodation">Accomodation</ion-select-option>
+          <ion-select-option value="travel">Travel</ion-select-option>
+          <ion-select-option value="misc">Misc</ion-select-option>
+        </ion-select>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Description</ion-label>
+        <ion-input type="text" [(ngModel)]="newExpense.description" name="description"> </ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Cost</ion-label>
+        <ion-input type="test" [(ngModel)]="newExpense.cost" name="cost"> </ion-input>
+      </ion-item>
+    </ion-list>
+
+    <ion-grid>
+      <ion-row>
+        <ion-col>
+          <ion-button expand="full" routerLink="/" routerDirection="back"> Back </ion-button>
+        </ion-col>
+        <ion-col>
+          <ion-button expand="full" type="submit" [disabled]="inputCheck()">Submit</ion-button>
+        </ion-col>
+      </ion-row>
+      </ion-grid>
+  </form>
+
+</ion-content>
