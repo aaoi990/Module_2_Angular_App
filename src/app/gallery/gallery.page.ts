@@ -2,11 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { PhotoService } from '../services/photo.service';
 
 @Component({
-  selector: 'app-tab2',
-  templateUrl: 'tab2.page.html',
-  styleUrls: ['tab2.page.scss']
+  selector: 'app-gallery',
+  templateUrl: 'gallery.page.html',
+  styleUrls: ['gallery.page.scss']
 })
-export class Tab2Page implements OnInit {
+export class Gallery implements OnInit {
 
   constructor(public photoService: PhotoService) {}
 

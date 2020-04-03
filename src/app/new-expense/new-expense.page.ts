@@ -1,9 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { Validators, FormBuilder, FormGroup } from '@angular/forms';
 
 import { ExpenseService } from '../services/expense.service';
+import { PhotoService } from '../services/photo.service';
 
-import { Expense } from '../models/expense';
+import { Photo } from '../models/photo';
 
 @Component({
   selector: 'app-new-expense',
@@ -11,21 +13,35 @@ import { Expense } from '../models/expense';
   styleUrls: ['./new-expense.page.scss'],
 })
 export class NewExpensePage implements OnInit {
-  newExpense: Expense = { id: this.expenseService.expenses.length + 1, type: '', description: '', cost: 0 };
-
+  public expenseForm: FormGroup;
+  public photo: Photo;
   constructor( private expenseService: ExpenseService,
-               private router: Router ) { }
+               public photoService: PhotoService,
+               public formBuilder: FormBuilder,
+               private router: Router ) {
+              this.expenseForm = formBuilder.group({
+                  id: [this.expenseService.expenses.length + 1],
+                  type: ['', Validators.required],
+                  description: ['', Validators.required],
+                  cost: ['', Validators.required],
+                  receipt_filepath: ['', Validators.required]
+              });
+                 
+                }
 
   ngOnInit() {
   }
 
   addExpense() {
-    this.expenseService.addExpense(this.newExpense)
+    this.expenseService.addExpense(this.expenseForm.value)
     this.router.navigateByUrl('/tabs/viewExpenses');   
   }
 
-  inputCheck() {
-    return (this.newExpense.description == '');
-  }
-
+  takePhoto() {
+    this.photoService.addNewToGallery(this.expenseForm.controls['id'].value).then((image) => 
+    {
+      this.expenseForm.controls['receipt_filepath'].patchValue(image.filepath),
+      this.photo = image;
+    }
+  )}
 }

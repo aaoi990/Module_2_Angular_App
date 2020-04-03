@@ -27,14 +27,14 @@ export class PhotoService {
     this.platform = platform;
   }
 
-  public async addNewToGallery() {
+  public async addNewToGallery(expenseId: number)  {
     const capturedPhoto = await Camera.getPhoto({
       resultType: CameraResultType.Uri, 
       source: CameraSource.Camera, 
       quality: 100 
     });
   
-    const savedImageFile = await this.savePicture(capturedPhoto);
+    const savedImageFile = await this.savePicture(capturedPhoto, expenseId);
     this.photos.unshift(savedImageFile);
 
     Storage.set({
@@ -46,6 +46,7 @@ export class PhotoService {
               return photoCopy;
               }))
     });
+    return savedImageFile
   }
 
   public async loadSaved() {
@@ -61,15 +62,15 @@ export class PhotoService {
     }
   }
 
-  private async savePicture(cameraPhoto: CameraPhoto) {
+  private async savePicture(cameraPhoto: CameraPhoto, expenseId: number) {
     const base64Data = await this.readAsBase64(cameraPhoto);  
-    const fileName = new Date().getTime() + '.jpeg';
+    const fileName = new Date().getTime() 
+      + '_expense_id_' + expenseId + '.jpeg';
     await Filesystem.writeFile({
       path: fileName,
       data: base64Data,
       directory: FilesystemDirectory.Data
     });
-  
     // Get platform-specific photo filepaths
     return await this.getPhotoFile(cameraPhoto, fileName);
   }

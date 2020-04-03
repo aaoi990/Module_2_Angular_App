@@ -3,4 +3,5 @@ export interface Expense {
     type: string;
     description: string;
     cost: number;
+    receipt_filepath: string;
 }
