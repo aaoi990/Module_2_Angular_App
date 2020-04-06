@@ -7,6 +7,7 @@ import {
   FilesystemDirectory, 
   CameraPhoto, 
   CameraSource } from '@capacitor/core';
+import * as moment from 'moment';
 
 const { 
   Camera, 
@@ -14,7 +15,6 @@ const {
   Storage } = Plugins;
 
 import { Photo } from '../models/photo';
-
 @Injectable({
   providedIn: 'root'
 })
@@ -62,16 +62,31 @@ export class PhotoService {
     }
   }
 
+  public async delete(id) {
+    this.loadSaved().then(() => { 
+      let index = this.photos.findIndex(p => p.filepath === id);    
+      if (index !== -1) this.photos.splice(index, 1)
+    }).then(() => {
+      Storage.set({
+        key: this.PHOTO_STORAGE,
+        value: JSON.stringify(this.photos.map(p => {
+                const photoCopy = { ...p };
+                delete photoCopy.base64;     
+                return photoCopy;
+                }))
+      });
+    })    
+  }
+
   private async savePicture(cameraPhoto: CameraPhoto, expenseId: number) {
     const base64Data = await this.readAsBase64(cameraPhoto);  
-    const fileName = new Date().getTime() 
+    const fileName = moment().unix()
       + '_expense_id_' + expenseId + '.jpeg';
     await Filesystem.writeFile({
       path: fileName,
       data: base64Data,
       directory: FilesystemDirectory.Data
     });
-    // Get platform-specific photo filepaths
     return await this.getPhotoFile(cameraPhoto, fileName);
   }
 

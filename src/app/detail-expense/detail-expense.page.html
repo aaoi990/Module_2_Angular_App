@@ -15,7 +15,23 @@
     <ion-card-content>
       £{{ expense.cost }}
     </ion-card-content>
+       
+    <ion-col size="6" 
+      *ngIf="photo">
+    <ion-img src="{{ photo.base64 ? photo.base64 : photo.webviewPath }}"></ion-img>
+    </ion-col>
   </ion-card>
 
-  <ion-button expand="full" routerLink="/" routerDirection="back"> Back </ion-button>
+  <ion-grid>
+    <ion-row>
+      <ion-col>
+        <ion-button expand="full" routerLink="/" routerDirection="back"> Back </ion-button>
+      </ion-col>
+      <ion-col>
+        <ion-button expand="full" (click)="delete()">Delete
+        </ion-button>
+      </ion-col>     
+    </ion-row>
+
+  </ion-grid>
 </ion-content>

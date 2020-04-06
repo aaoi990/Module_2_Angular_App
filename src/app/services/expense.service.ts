@@ -1,5 +1,9 @@
 import { Injectable } from '@angular/core';
+import { Plugins } from '@capacitor/core';
+
 import { Expense } from '../models/expense';
+
+const { Storage } = Plugins;
 
 @Injectable({
   providedIn: 'root'
@@ -7,15 +11,21 @@ import { Expense } from '../models/expense';
 export class ExpenseService {
   public selectedExpense: Expense ;  
   public totalExpense = 0;
-  public expenses = [
-      {id: 1, type: 'meal', description: 'Dinner with a client', cost: 10 },
-      {id: 2, type: 'meal', description: 'Lunch at airport', cost: 10 },   
-      {id: 3, type: 'lodging', description: 'Hotel at convention', cost: 100 }]
-  constructor() { }
+  public expenses = []
+  constructor() { this.getExpense().then(() => this.calculateExpense()) }
 
-  addExpense(expense): void {
+  addExpense(expense): void {    
     this.expenses.push(expense);
     this.calculateExpense();
+    this.setExpenses().then(() => 
+      this.calculateExpense()
+    ) 
+  }
+
+  async deleteExpense(expense) {
+    var index = this.expenses.indexOf(expense)
+    if (index !== -1) this.expenses.splice(index, 1);
+    return this.setExpenses()
   }
 
   calculateExpense(): void {
@@ -25,4 +35,17 @@ export class ExpenseService {
     });
     this.totalExpense = count;
   }
+
+  async setExpenses() {
+    await Storage.set({
+      key: 'expense',
+      value: JSON.stringify(this.expenses)
+    });
+  }
+
+  async getExpense() {
+    const ret = await Storage.get({ key: 'expense' });
+    this.expenses = JSON.parse(ret.value);
+  }
+
 }

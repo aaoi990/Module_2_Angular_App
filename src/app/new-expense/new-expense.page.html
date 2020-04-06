@@ -1,12 +1,13 @@
 <ion-header>
   <ion-toolbar>
     <ion-title>Add A New Expense</ion-title>
+    <ion-title size="small">All new expenses require a reciept photo to be valid.</ion-title>
   </ion-toolbar>
 </ion-header>
-<ion-content class="content-background" no-bounce>
 
+<ion-content class="content-background" no-bounce>
 <form [formGroup]="expenseForm" class="form-div">
-  <ion-list>
+    <ion-list>   
     <ion-item>
       <ion-label position="stacked">Type</ion-label>
       <ion-select formControlName="type" interface="action-sheet" name="type" >
@@ -28,17 +29,6 @@
     </ion-item>
   </ion-list>
 
-  <ion-item *ngIf="!expenseForm.controls.receipt_filepath.valid 
-    && (expenseForm.controls.cost.dirty)">
-    <p>You also need to add a photo for the expense to be valid</p>
-  </ion-item>
-   
-  <ion-col size="6" 
-  *ngIf="photo">
-  <ion-img src="{{ photo.base64 ? photo.base64 : photo.webviewPath }}"></ion-img>
-  </ion-col>
-
-
   <ion-grid>
     <ion-row>
       <ion-col>
@@ -54,8 +44,10 @@
         (click)="addExpense()">Submit</ion-button>
       </ion-col>
     </ion-row>
+
   </ion-grid>
 
 
 </form>
+
 </ion-content>

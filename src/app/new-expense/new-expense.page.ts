@@ -13,23 +13,26 @@ import { Photo } from '../models/photo';
   styleUrls: ['./new-expense.page.scss'],
 })
 export class NewExpensePage implements OnInit {
+  
   public expenseForm: FormGroup;
   public photo: Photo;
-  constructor( private expenseService: ExpenseService,
-               public photoService: PhotoService,
-               public formBuilder: FormBuilder,
-               private router: Router ) {
-              this.expenseForm = formBuilder.group({
-                  id: [this.expenseService.expenses.length + 1],
-                  type: ['', Validators.required],
-                  description: ['', Validators.required],
-                  cost: ['', Validators.required],
-                  receipt_filepath: ['', Validators.required]
-              });
-                 
-                }
+
+  constructor( 
+    private expenseService: ExpenseService,
+    public photoService: PhotoService,
+    public formBuilder: FormBuilder,
+    private router: Router ) {
+      this.expenseForm = formBuilder.group({
+        id: [Math.max.apply(Math, this.expenseService.expenses.map((o) => { return o.id + 1 }))],
+        type: ['', Validators.required],
+        description: ['', Validators.required],
+        cost: ['', Validators.required],
+        receipt_filepath: ['', Validators.required]
+      })          
+  }
 
   ngOnInit() {
+    
   }
 
   addExpense() {
