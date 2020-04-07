@@ -98,7 +98,8 @@ export class PhotoService {
   }
 
   /**
-   * Saves picture
+   * Saves picture. Has to be in base 64 format for the filesystem api
+   * to save.
    * @param cameraPhoto 
    * @returns Promise<Photo> 
    */
@@ -115,7 +116,7 @@ export class PhotoService {
   }
 
   /**
-   * Reads as base64
+   * Reads as base64 for filesystem api
    * @param cameraPhoto 
    * @returns Promise<string> 
    */
@@ -142,6 +143,14 @@ export class PhotoService {
     reader.readAsDataURL(blob);
   });
 
+  /**
+   * Gets photo file in the correct format for the platform.
+   * Use 'hybrid' to check for the native capacitor / cordova
+   * runtimes.
+   * @param cameraPhoto 
+   * @param fileName 
+   * @returns  
+   */
   private async getPhotoFile(cameraPhoto, fileName) {
     if (this.platform.is('hybrid')) {
       const fileUri = await Filesystem.getUri({
