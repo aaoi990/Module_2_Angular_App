@@ -13,21 +13,37 @@
 </ion-header>
 
 <ion-content>
-  <ion-list>
-    <ion-item *ngFor="let expense of expenseService.expenses" (click)="onSelect(expense)">
-      {{expense.description}}
-      <ion-chip slot="end">
-        <ion-label>£{{expense.cost}}</ion-label>
-      </ion-chip>
+  <ion-list *ngFor="let expense of expenseService.expenses">    
+  <ng-container [ngSwitch]="expense.type">
+    <ion-item (click)="onSelect(expense)" class="select" *ngSwitchCase="'meal'">        
+      <ion-icon slot="start" name="restaurant-outline"></ion-icon>
+      <ion-label><h2>{{expense.description}}</h2><p>{{expense.type | titlecase}} Submitted: {{expense.id | date}}</p></ion-label>
+      <ion-chip slot="end"><ion-label>£{{expense.cost}}</ion-label></ion-chip>
     </ion-item>
+    <ion-item (click)="onSelect(expense)" class="select" *ngSwitchCase="'travel'">        
+      <ion-icon slot="start" name="airplane-outline"></ion-icon>
+      <ion-label><h2>{{expense.description}}</h2><p>{{expense.type | titlecase}} Submitted: {{expense.id | date}}</p></ion-label>
+      <ion-chip slot="end"><ion-label>£{{expense.cost}}</ion-label></ion-chip>
+    </ion-item>
+    <ion-item (click)="onSelect(expense)" class="select" *ngSwitchCase="'accomodation'">        
+      <ion-icon slot="start" name="bed-outline"></ion-icon>
+      <ion-label><h2>{{expense.description}}</h2><p>{{expense.type | titlecase}} Submitted: {{expense.id | date}}</p></ion-label>
+      <ion-chip slot="end"><ion-label>£{{expense.cost}}</ion-label></ion-chip>
+    </ion-item>
+    <ion-item (click)="onSelect(expense)" class="select" *ngSwitchCase="'misc'">        
+      <ion-icon slot="start" name="copy-outline"></ion-icon>
+      <ion-label><h2>{{expense.description}}</h2><p>{{expense.type | titlecase}} Submitted: {{expense.id | date}}</p></ion-label>
+      <ion-chip slot="end"><ion-label>£{{expense.cost}}</ion-label></ion-chip>
+    </ion-item>
+  </ng-container>
+  </ion-list>
+
     <ion-item color="primary">
       <ion-label>
         Current Expenses Total:
       </ion-label>
       <ion-chip slot="end" color="light">
-        <ion-label >£{{expenseService.totalExpense}}</ion-label>
+        <ion-label >{{expenseService.totalExpense  | currency:'£'}}</ion-label>
       </ion-chip>
     </ion-item>
-  </ion-list>
-</ion-content>
-
+  </ion-content>
