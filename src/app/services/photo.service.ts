@@ -7,6 +7,9 @@ import {
   FilesystemDirectory, 
   CameraPhoto, 
   CameraSource } from '@capacitor/core';
+/**
+* <3 moment
+*/
 import * as moment from 'moment';
 
 const { 
@@ -23,18 +26,27 @@ export class PhotoService {
   private PHOTO_STORAGE: string = "photos";
   private platform: Platform;
 
+  /**
+   * Creates an instance of photo service.
+   * Sets the platform the app is running on web / app
+   * @param platform 
+   */
   constructor(platform: Platform) { 
     this.platform = platform;
   }
 
-  public async addNewToGallery(expenseId: number)  {
+  /**
+   * Adds a new photo to the gallery
+   * @returns  
+   */
+  public async addNewToGallery()  {
     const capturedPhoto = await Camera.getPhoto({
       resultType: CameraResultType.Uri, 
       source: CameraSource.Camera, 
       quality: 100 
     });
   
-    const savedImageFile = await this.savePicture(capturedPhoto, expenseId);
+    const savedImageFile = await this.savePicture(capturedPhoto);
     this.photos.unshift(savedImageFile);
 
     Storage.set({
@@ -49,10 +61,12 @@ export class PhotoService {
     return savedImageFile
   }
 
+  /**
+   * Loads saved photo's. Storage api only stores strings
+   */
   public async loadSaved() {
     const photos = await Storage.get({ key: this.PHOTO_STORAGE });
     this.photos = JSON.parse(photos.value) || [];
-  
     for (let photo of this.photos) {
       const readFile = await Filesystem.readFile({
           path: photo.filepath,
@@ -62,26 +76,36 @@ export class PhotoService {
     }
   }
 
-  public async delete(id) {
-    this.loadSaved().then(() => { 
-      let index = this.photos.findIndex(p => p.filepath === id);    
-      if (index !== -1) this.photos.splice(index, 1)
-    }).then(() => {
-      Storage.set({
-        key: this.PHOTO_STORAGE,
-        value: JSON.stringify(this.photos.map(p => {
+
+  /**
+   * Deletes photo from the gallery if it exists
+   * and sets the storage. 
+   * @param filepath of the photo to be deleted.
+   */
+  public async delete(filepath) {
+      let index = this.photos.findIndex(p => p.filepath === filepath);    
+      if (index !== -1) { 
+        this.photos.splice(index, 1) 
+        Storage.set({
+          key: this.PHOTO_STORAGE,
+          value: JSON.stringify(this.photos.map(p => {
                 const photoCopy = { ...p };
                 delete photoCopy.base64;     
                 return photoCopy;
-                }))
+          }))
       });
-    })    
+    }     
   }
 
-  private async savePicture(cameraPhoto: CameraPhoto, expenseId: number) {
+  /**
+   * Saves picture
+   * @param cameraPhoto 
+   * @returns Promise<Photo> 
+   */
+  private async savePicture(cameraPhoto: CameraPhoto): Promise<Photo> {
     const base64Data = await this.readAsBase64(cameraPhoto);  
     const fileName = moment().unix()
-      + '_expense_id_' + expenseId + '.jpeg';
+      + '.jpeg';
     await Filesystem.writeFile({
       path: fileName,
       data: base64Data,
@@ -90,16 +114,18 @@ export class PhotoService {
     return await this.getPhotoFile(cameraPhoto, fileName);
   }
 
-  private async readAsBase64(cameraPhoto: CameraPhoto) {
+  /**
+   * Reads as base64
+   * @param cameraPhoto 
+   * @returns Promise<string> 
+   */
+  private async readAsBase64(cameraPhoto: CameraPhoto): Promise<string> {
     if (this.platform.is('hybrid')) {
       const file = await Filesystem.readFile({
         path: cameraPhoto.path
-      });
-  
+      });  
       return file.data;
-    }
-    else {
-      // Fetch the photo, read as a blob, then convert to base64 format      
+    }  else {     
       const response = await fetch(cameraPhoto.webPath);
       const blob = await response.blob();
   
@@ -121,8 +147,7 @@ export class PhotoService {
       const fileUri = await Filesystem.getUri({
         directory: FilesystemDirectory.Data,
         path: fileName
-      });
-  
+      });  
       return {
         filepath: fileUri.uri,
         webviewPath: Capacitor.convertFileSrc(fileUri.uri),

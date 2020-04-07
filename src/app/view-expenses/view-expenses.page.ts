@@ -14,14 +14,21 @@ export class ViewExpensesPage  {
   constructor(public expenseService: ExpenseService,
     public photoService: PhotoService,
     private router: Router) {
-      this.expenseService.calculateExpense();
+      this.expenseService.setExpenses();
     }
 
+  /**
+   * Sets the expense in the service to the selected expense.
+   * @param expense 
+   */
   onSelect(expense) {
     this.expenseService.selectedExpense = expense;
     this.router.navigateByUrl('/detail-expense');
   }
 
+  /**
+   * Navigates to the new expense route
+   */
   newExpense() {
     this.router.navigateByUrl('/new-expense');
   }
