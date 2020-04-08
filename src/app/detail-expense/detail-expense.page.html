@@ -11,12 +11,10 @@
     <ion-card-header>      
       <ion-card-title>{{ expense.description }}</ion-card-title>
       <ion-card-subtitle>{{ expense.type }}</ion-card-subtitle>
+      <ion-card-subtitle>Submitted: {{expense.id | date}} </ion-card-subtitle>
+      <ion-card-subtitle>{{expense.cost | currency:'£'}}</ion-card-subtitle>
     </ion-card-header>  
     <ion-card-content>
-      £{{ expense.cost }}
-   
-     
-
     <ion-col size="6" 
       *ngIf="photo">
     <ion-img src="{{ photo.base64 ? photo.base64 : photo.webviewPath }}"></ion-img>

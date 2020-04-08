@@ -33,6 +33,7 @@ export class PhotoService {
    */
   constructor(platform: Platform) { 
     this.platform = platform;
+    this.loadSaved();
   }
 
   /**
@@ -66,12 +67,11 @@ export class PhotoService {
    */
   public async loadSaved() {
     const photos = await Storage.get({ key: this.PHOTO_STORAGE });
-    this.photos = JSON.parse(photos.value) || [];
+    this.photos = JSON.parse(photos.value) || []
     for (let photo of this.photos) {
       const readFile = await Filesystem.readFile({
           path: photo.filepath,
-          directory: FilesystemDirectory.Data
-      });    
+      });   
       photo.base64 = `data:image/jpeg;base64,${readFile.data}`;
     }
   }

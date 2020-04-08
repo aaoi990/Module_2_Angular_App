@@ -67,8 +67,9 @@ export class ExpenseService {
    * @returns Promise
    */
   async getExpense() {
-    const ret = await Storage.get({ key: 'expense' });
-    this.expenses = JSON.parse(ret.value);
+    const ret = await Storage.get({ key: 'expense' });   
+    this.expenses = JSON.parse(ret.value) || [];
+    this.calculateExpense();
   }
 
 }

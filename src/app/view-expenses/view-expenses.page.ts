@@ -14,7 +14,7 @@ export class ViewExpensesPage  {
   constructor(public expenseService: ExpenseService,
     public photoService: PhotoService,
     private router: Router) {
-      this.expenseService.setExpenses();
+      this.expenseService.getExpense();
     }
 
   /**
